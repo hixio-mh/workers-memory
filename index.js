@@ -18,6 +18,7 @@ if (window.Worker) {
     console.log('[MAIN] → Message posted to %cred worker', 'color: #DB4437;');
   };
 
+  // When receiving a message from blue worker....
   workerBlue.onmessage = function(e) {
     result.textContent = e.data;
     console.log('Message received from %cblue worker', 'color: #4285F4;');
@@ -30,8 +31,15 @@ if (window.Worker) {
 
   ///////////
 
-  const sharedArrayBuffer = new SharedArrayBuffer(1);
+  const sharedArrayBuffer = new SharedArrayBuffer(8);
   const workerYellow = new Worker('workerYellow.js');
+  workerYellow.postMessage(sharedArrayBuffer);
+
+  workerYellow.onmessage = function(e) {
+    // note that i'm not passing the data as an argument here!
+    // the data is really shared
+    console.log(sharedArrayBuffer);
+  };
 } else {
   console.log("Your browser doesn't support web workers.");
 }
